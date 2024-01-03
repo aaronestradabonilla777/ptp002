@@ -1,17 +1,24 @@
+import { useState } from "react";
 import "./App.css";
-const items =[ 
+
+interface Item { 
+  id: `${string}-${string}-${string}-${string}-${string}`
+}
+
+const INITIAL_ITEMS =[ 
   {
     id: crypto.randomUUID(),
-    timestamp: new Date(),
+    timestamp: Date.now(),
     text: 'Videojuegos🎮'
   },
   {
     id: crypto.randomUUID(),
-    timestamp: new Date(),
+    timestamp: Date.now(),
     text: 'Libros📚',
   }
 ]
 function App() {
+  const [items, SetItems] =  useState(INITIAL_ITEMS)
   return (
     <main>
       <aside>
@@ -29,10 +36,16 @@ function App() {
       <section>
         <h2>Lista de Elementos</h2>
         <ul>
-          <li>Videojuegos🎮</li>
-          <li>libros 📕</li>
-          <li>Series📺</li>
-          <li>Peliculas🎥</li>
+         {
+          items.map(item => {
+            return(
+              <li  key={item.id}>
+              {item.text}
+              </li>
+            )
+          })
+         }
+        
         </ul>
       </section>
     </main>
