@@ -1,5 +1,16 @@
 import "./App.css";
-
+const items =[ 
+  {
+    id: crypto.randomUUID(),
+    timestamp: new Date(),
+    text: 'Videojuegos🎮'
+  },
+  {
+    id: crypto.randomUUID(),
+    timestamp: new Date(),
+    text: 'Libros📚',
+  }
+]
 function App() {
   return (
     <main>
