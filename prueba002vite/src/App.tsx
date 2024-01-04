@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./App.css";
 
+type ItemId = `${string}-${string}-${string}-${string}-${string}`
 interface Item {
-  id:  `${string}-${string}-${string}-${string}-${string}`
+  id:  ItemId
   timestamp: number
   text: string
 }
@@ -42,7 +43,7 @@ if (!isInput || input == null) return
   return { name, value }
 }*/
 
-const newItem: Item = { 
+const newItem: Item = {
   id: crypto.randomUUID(),
   text: input.value,
   timestamp: Date.now()
@@ -54,10 +55,11 @@ SetItems((prevItems) => {
 input.value = ''
 }
 
-const createHandleRemoveItem =  ()=> () => {
-  SetItems((prevItems) => {
-    return prevItems.filter((currentItem => currentItem.id !== item.id))
-    })
+const createHandleRemoveItem =  (id: ItemId)=> () => {
+  // SetItems((prevItems) => {
+  //   return prevItems.filter((currentItem => currentItem.id !== Item.id))
+  //   })
+  removeItem(id)
 }
 
   return (
@@ -79,21 +81,28 @@ const createHandleRemoveItem =  ()=> () => {
 
       <section>
         <h2>Lista de Elementos</h2>
-        <ul>
-         {
+
+
+          items.length === 0 ? (
+          <p>
+            <strong>No hay elementos en la lista</strong>
+          </p>
+          ) :(
+           <ul>{
           items.map(item => {
             return(
               <li  key={item.id}>
               {item.text}
-              <button onClick={}>
+              <button onClick={createHandleRemoveItem (item.id)}>
 
               </button>
               </li>
             )
           })
-         }
 
-        </ul>
+         }</ul>
+
+
       </section>
     </main>
   );
