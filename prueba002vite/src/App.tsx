@@ -19,6 +19,15 @@ const INITIAL_ITEMS =[
 ]
 function App() {
   const [items, SetItems] =  useState(INITIAL_ITEMS)
+const.handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
+  event.preventDefault ()
+
+const { elements } = event.currentTarget.elements
+const input = elements.namedItem('item')
+
+
+}
+
   return (
     <main>
       <aside>
@@ -27,6 +36,9 @@ function App() {
         <form>
           <label>
             Elemento a introducir:
+
+
+
             <input name="item" required type="text" placeholder="Videojuegos" />
           </label>
           <button> Anadir Elemento a la lista</button>
@@ -45,7 +57,7 @@ function App() {
             )
           })
          }
-        
+
         </ul>
       </section>
     </main>
