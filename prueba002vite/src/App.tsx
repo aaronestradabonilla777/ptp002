@@ -1,111 +1,93 @@
-import { useState } from "react";
-import "./App.css";
+import './App.css'
+import { Item } from './components/Item'
+import { useItems } from './hooks/useItems'
+import { useSEO } from './hooks/useSEO'
 
-type ItemId = `${string}-${string}-${string}-${string}-${string}`
-interface Item {
-  id:  ItemId
+export type ItemId = `${string}-${string}-${string}-${string}-${string}`
+export interface Item {
+  id: ItemId
   timestamp: number
   text: string
 }
 
-const INITIAL_ITEMS =[
-  {
-    id: crypto.randomUUID(),
-    timestamp: Date.now(),
-    text: 'Videojuegos🎮'
-  },
-  {
-    id: crypto.randomUUID(),
-    timestamp: Date.now(),
-    text: 'Libros📚',
-  }
-]
 function App() {
-  const [items, SetItems] =  useState(INITIAL_ITEMS)
-  //trampa TSX
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) =>{
+  const { items, addItem, removeItem } = useItems()
 
-  //e.target.value => para escuchar el onchange de un inputt
-  event.preventDefault ()
+  useSEO({
+    title: `[${items.length}] Prueba técnica de React`,
+    description: 'Añadir y eliminar elementos de una lista'
+  })
 
-//const { elements } = event.currentTarget.elements
-const elements = event.currentTarget.elements
-const input = elements.namedItem('item')
-const isInput = input instanceof HTMLInputElement
-if (!isInput || input == null) return
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
+    // e.target.value -> para escuchar el onChange de un INPUT
 
+    const { elements } = event.currentTarget
 
-/*const getControl = control => {
-  const isControl = control instanceof HTMLElement
-  if (!isControl || control == null) return
-  const { name, value } = control
-  return { name, value }
-}*/
+    // estrategia 1, trampa de TypeScript
+    // no os lo recomiendo:
+    // const input = elements.namedItem('item') as HTMLInputElement
 
-const newItem: Item = {
-  id: crypto.randomUUID(),
-  text: input.value,
-  timestamp: Date.now()
-}
+    // estrategia 2, es asegurarse que realmente es lo que es
+    const input = elements.namedItem('item')
+    const isInput = input instanceof HTMLInputElement // JavaScript puro
+    if (!isInput || input == null) return
 
-SetItems((prevItems) => {
- return [...prevItems, newItem]
-})
-input.value = ''
-}
+    addItem(input.value)
 
-const createHandleRemoveItem =  (id: ItemId)=> () => {
-  // SetItems((prevItems) => {
-  //   return prevItems.filter((currentItem => currentItem.id !== Item.id))
-  //   })
-  removeItem(id)
-}
+    input.value = ''
+  }
+
+  const createHandleRemoveItem = (id: ItemId) => () => {
+    removeItem(id)
+  }
 
   return (
     <main>
       <aside>
-        <h1>Prueba Tecnica</h1>
-        <h2>Anadir y eliminar elemento de una lista</h2>
-        <form>
+        <h1>Prueba técnica de React</h1>
+        <h2>Añadir y eliminar elementos de una lista</h2>
+
+        <form onSubmit={handleSubmit} aria-label='Añadir elementos a la lista'>
           <label>
             Elemento a introducir:
-
-
-
-            <input name="item" required type="text" placeholder="Videojuegos" />
+            <input
+              name="item"
+              required
+              type="text"
+              placeholder="Videojuegos 🎮"
+            />
           </label>
-          <button> Anadir Elemento a la lista</button>
+          <button>Añadir elemento a la lista</button>
         </form>
       </aside>
 
       <section>
-        <h2>Lista de Elementos</h2>
-
-
-          items.length === 0 ? (
-          <p>
-            <strong>No hay elementos en la lista</strong>
-          </p>
-          ) :(
-           <ul>{
-          items.map(item => {
-            return(
-              <li  key={item.id}>
-              {item.text}
-              <button onClick={createHandleRemoveItem (item.id)}>
-
-              </button>
-              </li>
+        <h2>Lista de elementos</h2>
+          {
+            items.length === 0 ? (
+              <p>
+                <strong>No hay elementos en la lista.</strong>
+              </p>
+            ) : (
+              <ul>
+                {
+                  items.map((item) => {
+                    return (
+                      <Item
+                        {...item}
+                        handleClick={createHandleRemoveItem(item.id)}
+                        key={item.id} />
+                    )
+                  })
+                }
+              </ul>
             )
-          })
-
-         }</ul>
-
-
+          }
       </section>
     </main>
-  );
+  )
 }
 
-export default App;
+export default App
